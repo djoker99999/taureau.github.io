@@ -452,25 +452,98 @@
       min-height: 25px;
     }
 
-    .result-box {
-      background: linear-gradient(135deg, rgba(255, 107, 157, 0.9), rgba(254, 202, 87, 0.9));
-      padding: 15px;
-      border-radius: 15px;
-      margin: 15px 0;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(10px);
-      animation: fadeInUp 0.5s ease;
+    /* Styles pour la popup de victoire */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-content {
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.95), rgba(254, 202, 87, 0.95));
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      transform: scale(0.7);
+      transition: transform 0.4s ease;
+    }
+
+    .popup-overlay.active .popup-content {
+      transform: scale(1);
+    }
+
+    .popup-content h3 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-reward-image {
+      width: 140px;
+      height: 140px;
+      margin: 15px auto;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .popup-reward-text {
+      font-size: 1.3em;
+      margin: 15px 0;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-victory-message {
+      font-size: 1.4em;
+      margin: 15px 0;
+      color: #feca57;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      font-weight: bold;
+    }
+
+    .popup-close-btn {
+      padding: 10px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(45deg, #ff6b9d, #c44569);
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .popup-close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(45deg, #feca57, #ff6b9d);
     }
 
     .hidden {
@@ -519,17 +592,6 @@
       display: none;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       border: 2px solid rgba(255,255,255,0.2);
-    }
-
-    .reward-image {
-      width: 120px;
-      height: 120px;
-      margin: 10px auto;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .difficulty-selector {
@@ -612,20 +674,26 @@
         margin: 5px;
       }
       
-      .difficulty-selector {
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
+      .popup-content {
+        padding: 20px;
+        max-width: 90%;
       }
       
-      .difficulty-btn {
-        width: 80%;
-        padding: 10px;
+      .popup-reward-image {
+        width: 120px;
+        height: 120px;
       }
       
-      .reward-image {
-        width: 100px;
-        height: 100px;
+      .popup-content h3 {
+        font-size: 1.5em;
+      }
+      
+      .popup-reward-text {
+        font-size: 1.1em;
+      }
+      
+      .popup-victory-message {
+        font-size: 1.2em;
       }
     }
 
@@ -648,22 +716,6 @@
       border-radius: 50%;
       pointer-events: none;
       z-index: 2;
-    }
-
-    /* Styles améliorés pour la fin du jeu */
-    .victory-message {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 15px 0;
-      color: #feca57;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-    }
-
-    .reward-text {
-      font-size: 1.3em;
-      margin: 10px 0;
-      color: #fff;
-      font-weight: bold;
     }
 
     .difficulty-badge {
@@ -726,12 +778,16 @@
     </div>
 
     <p id="message"></p>
+  </div>
 
-    <div id="resultContainer" class="hidden result-box">
+  <!-- Popup de victoire -->
+  <div class="popup-overlay" id="victoryPopup">
+    <div class="popup-content">
       <h3>🎉 Taureau Magique Dompté ! 🎉</h3>
-      <div id="rewardImage" class="reward-image"></div>
-      <p id="coinsResult" class="reward-text"></p>
-      <div id="victoryMessage" class="victory-message"></div>
+      <div id="popupRewardImage" class="popup-reward-image"></div>
+      <p id="popupRewardText" class="popup-reward-text"></p>
+      <div id="popupVictoryMessage" class="popup-victory-message"></div>
+      <button class="popup-close-btn" id="closePopupBtn">Continuer</button>
     </div>
   </div>
 
@@ -749,13 +805,16 @@
     const bull = document.getElementById("bull");
     const message = document.getElementById("message");
     const attackBtn = document.getElementById("attackBtn");
-    const resultContainer = document.getElementById("resultContainer");
-    const coinsResult = document.getElementById("coinsResult");
-    const victoryMessage = document.getElementById("victoryMessage");
     const gameContainer = document.getElementById("gameContainer");
     const comboIndicator = document.getElementById("comboIndicator");
-    const rewardImage = document.getElementById("rewardImage");
     const particlesContainer = document.getElementById("particlesContainer");
+    
+    // Éléments de la popup
+    const victoryPopup = document.getElementById("victoryPopup");
+    const popupRewardImage = document.getElementById("popupRewardImage");
+    const popupRewardText = document.getElementById("popupRewardText");
+    const popupVictoryMessage = document.getElementById("popupVictoryMessage");
+    const closePopupBtn = document.getElementById("closePopupBtn");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
@@ -1023,8 +1082,7 @@
       }
     }
 
-    function endGame() {
-      let recompense = 0;
+    function showVictoryPopup() {
       let rewardText = "";
       let victoryText = "";
       let rewardImg = "";
@@ -1032,42 +1090,48 @@
       // Déterminer la récompense selon la difficulté
       switch(currentDifficulty) {
         case "easy":
-          recompense = 1; // Léon chaton
           rewardText = "Léon chaton !";
           victoryText = "Félicitations ! Tu as découvert un adorable compagnon !";
           rewardImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkZIBKVuctd-81US1fPCxkxx5qaA3KNSzRVw&s";
           break;
         case "medium":
-          recompense = 10000; // Planète merveilleuse
           rewardText = "planète merveilleuse !";
           victoryText = "Incroyable ! Tu as trouvé un trésor interstellaire !";
           rewardImg = "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8520d47b59c202a4534c1560a355ae06~tplv-obj.webp";
           break;
         case "hard":
-          recompense = 30000; // Lion
           rewardText = "lion majestueux !";
           victoryText = "Victoire totale ! Tu as dompté le roi de la jungle !";
           rewardImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRck3UIOweF0fz3r3AQRfZeExZSGxI_yJaDtm54uXIp7210gJBnen4B1qFTNsUSzgfD2yQ&usqp=CAU";
           break;
       }
       
+      popupRewardImage.style.backgroundImage = `url('${rewardImg}')`;
+      
+      // Message de victoire clair et épuré
+      popupRewardText.innerHTML = `
+        <div class="difficulty-badge ${currentDifficulty}">NIVEAU ${currentDifficulty.toUpperCase()}</div><br>
+        <strong>RÉCOMPENSE :</strong><br>
+        ${rewardText}
+      `;
+      
+      popupVictoryMessage.textContent = victoryText;
+      
+      // Afficher la popup
+      victoryPopup.classList.add('active');
+    }
+
+    function closeVictoryPopup() {
+      victoryPopup.classList.remove('active');
+    }
+
+    function endGame() {
       playBreakSound();
       
       message.textContent = "💥 Félicitations ! Tu as dompté le taureau magique ! 🐂✨";
       
       setTimeout(() => {
-        rewardImage.style.backgroundImage = `url('${rewardImg}')`;
-        
-        // Message de victoire clair et épuré
-        coinsResult.innerHTML = `
-          <div class="difficulty-badge ${currentDifficulty}">NIVEAU ${currentDifficulty.toUpperCase()}</div><br>
-          <strong>RÉCOMPENSE :</strong><br>
-          ${rewardText}
-        `;
-        
-        victoryMessage.textContent = victoryText;
-        
-        resultContainer.classList.remove("hidden");
+        showVictoryPopup();
       }, 500);
       
       comboIndicator.style.display = "none";
@@ -1129,7 +1193,8 @@
       bull.className = "bull " + currentDifficulty;
       message.textContent = `Taureau magique ${currentDifficulty === "easy" ? "facile" : currentDifficulty === "medium" ? "moyen" : "difficile"} - À tout moment le taureau peut être dompté...`;
       
-      resultContainer.classList.add("hidden");
+      // Fermer la popup si elle est ouverte
+      closeVictoryPopup();
       comboIndicator.style.display = "none";
 
       // reset des compteurs visibles (sécurité si tu veux les afficher autrement)
@@ -1156,6 +1221,16 @@
       btn.addEventListener('click', function() {
         setDifficulty(this.getAttribute('data-difficulty'));
       });
+    });
+
+    // Fermer la popup
+    closePopupBtn.addEventListener('click', closeVictoryPopup);
+
+    // Fermer la popup en cliquant en dehors
+    victoryPopup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVictoryPopup();
+      }
     });
 
     // Raccourcis clavier
@@ -1207,6 +1282,9 @@
         case 'd':
         case 'D':
           setDifficulty('hard');
+          break;
+        case 'Escape':
+          closeVictoryPopup();
           break;
       }
     });
