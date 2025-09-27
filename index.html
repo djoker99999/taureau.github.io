@@ -486,6 +486,7 @@
       backdrop-filter: blur(10px);
       transform: scale(0.7);
       transition: transform 0.4s ease;
+      position: relative;
     }
 
     .popup-overlay.active .popup-content {
@@ -1117,12 +1118,22 @@
       
       popupVictoryMessage.textContent = victoryText;
       
-      // Afficher la popup
-      victoryPopup.classList.add('active');
+      // Centrer la popup sur le jeu
+      const gameRect = gameContainer.getBoundingClientRect();
+      const popupContent = document.querySelector('.popup-content');
+      
+      // Positionner la popup au centre du jeu
+      victoryPopup.style.display = 'flex';
+      setTimeout(() => {
+        victoryPopup.classList.add('active');
+      }, 10);
     }
 
     function closeVictoryPopup() {
       victoryPopup.classList.remove('active');
+      setTimeout(() => {
+        victoryPopup.style.display = 'none';
+      }, 300);
     }
 
     function endGame() {
