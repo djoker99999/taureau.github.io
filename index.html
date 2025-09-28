@@ -741,16 +741,23 @@
   </style>
 </head>
 <body>
+  <!-- Modal de sélection de récompense -->
+  <div class="popup-overlay active" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
+    <div class="popup-content">
+      <h3 id="rewardModalTitle">Choisis ta récompense !</h3>
+      <div class="difficulty-selector">
+        <div class="difficulty-btn easy active" data-reward="easy">Facile<br>🐱 Chat</div>
+        <div class="difficulty-btn medium" data-reward="medium">Moyen<br>🌍 Planète</div>
+        <div class="difficulty-btn hard" data-reward="hard">Difficile<br>🦁 Lion</div>
+      </div>
+      <p style="margin-top: 15px; color: #feca57; font-weight: bold;">Sélectionne une récompense pour commencer la partie</p>
+    </div>
+  </div>
+
   <div class="game-container" id="gameContainer">
     <div class="combo-indicator" id="comboIndicator">COMBO x0</div>
 
     <h1>🐂 Le Taureau Magique !</h1>
-    
-    <div class="difficulty-selector">
-      <div class="difficulty-btn easy active" data-difficulty="easy">Facile</div>
-      <div class="difficulty-btn medium" data-difficulty="medium">Moyen</div>
-      <div class="difficulty-btn hard" data-difficulty="hard">Difficile</div>
-    </div>
     
     <div class="bull-container">
       <div class="bull easy" id="bull"></div>
@@ -816,6 +823,9 @@
     const popupRewardText = document.getElementById("popupRewardText");
     const popupVictoryMessage = document.getElementById("popupVictoryMessage");
     const closePopupBtn = document.getElementById("closePopupBtn");
+
+    // Nouvel élément pour la modal de récompense
+    const rewardModal = document.getElementById("rewardModal");
 
     const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
 
@@ -1162,19 +1172,20 @@
       attackBtn.textContent = `Attaquer (${mode} coup${mode > 1 ? 's' : ''})`;
     }
 
+    // Nouvelle fonction pour gérer la sélection de récompense
     function setDifficulty(difficulty) {
       currentDifficulty = difficulty;
-      
-      // Mettre à jour l'apparence des boutons de difficulté
-      document.querySelectorAll('.difficulty-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.querySelector(`.difficulty-btn.${difficulty}`).classList.add('active');
       
       // Mettre à jour l'apparence du taureau
       bull.className = "bull " + difficulty;
       
-      // Réinitialiser le jeu avec la nouvelle difficulté
+      // Fermer la modal de sélection
+      rewardModal.classList.remove('active');
+      setTimeout(() => {
+        rewardModal.style.display = 'none';
+      }, 300);
+      
+      // Démarrer le jeu
       initGame();
     }
 
@@ -1214,9 +1225,18 @@
       hitsUntilCoin = 4;
     }
 
+    // Fonction pour démarrer une nouvelle partie avec sélection de récompense
+    function startNewGame() {
+      // Afficher la modal de sélection de récompense
+      rewardModal.style.display = 'flex';
+      setTimeout(() => {
+        rewardModal.classList.add('active');
+      }, 10);
+    }
+
     // Événements CORRIGÉS
     document.getElementById("attackBtn").addEventListener("click", attack);
-    document.getElementById("resetBtn").addEventListener("click", initGame);
+    document.getElementById("resetBtn").addEventListener("click", startNewGame);
 
     document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
     document.getElementById("mode5").addEventListener("click", () => setAttackMode(5));
@@ -1227,10 +1247,10 @@
     document.getElementById("mode500").addEventListener("click", () => setAttackMode(500));
     document.getElementById("mode1000").addEventListener("click", () => setAttackMode(1000));
 
-    // Sélecteur de difficulté
-    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    // Sélecteur de récompense dans la modal
+    document.querySelectorAll('#rewardModal .difficulty-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        setDifficulty(this.getAttribute('data-difficulty'));
+        setDifficulty(this.getAttribute('data-reward'));
       });
     });
 
@@ -1280,7 +1300,7 @@
           break;
         case 'r':
         case 'R':
-          initGame();
+          startNewGame();
           break;
         case 'e':
         case 'E':
@@ -1309,7 +1329,8 @@
       }
     }, 1000);
 
-    initGame();
+    // Démarrer avec la modal de sélection de récompense
+    startNewGame();
   </script>
 </body>
 </html>
