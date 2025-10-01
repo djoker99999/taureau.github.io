@@ -376,34 +376,71 @@
     .attack-modes {
       display: flex;
       justify-content: center;
-      gap: 5px;
+      gap: 12px;
       margin: 15px 0;
       flex-wrap: wrap;
     }
 
-    .attack-mode-btn {
-      padding: 6px 10px;
-      font-size: 12px;
+    .attack-mode-image {
+      width: 110px;
+      height: 110px;
       cursor: pointer;
       border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 15px;
       background: rgba(255, 255, 255, 0.1);
-      color: #fff;
       transition: all 0.3s ease;
       backdrop-filter: blur(5px);
-      min-width: 45px;
-      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      position: relative;
     }
 
-    .attack-mode-btn:hover {
+    .attack-mode-image:hover {
       background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
     }
 
-    .attack-mode-btn.active {
-      background: linear-gradient(45deg, #ff6b9d, #feca57);
+    .attack-mode-image.active {
       border-color: #fff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .attack-mode-image img {
+      width: 65px;
+      height: 65px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+
+    .attack-mode-label {
+      font-size: 13px;
+      margin-top: 5px;
+      font-weight: bold;
+      color: #feca57;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    }
+
+    .multiplier-indicator {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(45deg, #ff6b9d, #feca57);
+      color: #000;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      border: 2px solid white;
     }
 
     .controls {
@@ -843,14 +880,30 @@
     </div>
 
     <div class="attack-modes">
-      <button id="mode1" class="attack-mode-btn active">1</button>
-      <button id="mode5" class="attack-mode-btn">5</button>
-      <button id="mode10" class="attack-mode-btn">10</button>
-      <button id="mode30" class="attack-mode-btn">30</button>
-      <button id="mode50" class="attack-mode-btn">50</button>
-      <button id="mode100" class="attack-mode-btn">100</button>
-      <button id="mode500" class="attack-mode-btn">500</button>
-      <button id="mode1000" class="attack-mode-btn">1000</button>
+      <div id="mode1" class="attack-mode-image active">
+        <img src="https://i.ibb.co/WNXDxn2y/IMG-7354-Photoroom.png" alt="Rose - 1 coup">
+        <div class="attack-mode-label">1 coup</div>
+      </div>
+      <div id="mode10" class="attack-mode-image">
+        <img src="https://i.ibb.co/7JsBRrCn/IMG-5885.png" alt="Rosa - 10 coups">
+        <div class="attack-mode-label">10 coups</div>
+      </div>
+      <div id="mode30" class="attack-mode-image">
+        <img src="https://i.ibb.co/8DMJ0cxy/IMG-7355-Photoroom.png" alt="Donuts - 30 coups">
+        <div class="attack-mode-label">30 coups</div>
+      </div>
+      <div id="mode100" class="attack-mode-image">
+        <img src="https://i.ibb.co/C5M6DHcS/IMG-7356-Photoroom.png" alt="Coeurs - 100 coups">
+        <div class="attack-mode-label">100 coups</div>
+      </div>
+      <div id="mode500" class="attack-mode-image">
+        <img src="https://i.ibb.co/nNy17WfL/IMG-6065.png" alt="Mini Gun - 500 coups">
+        <div class="attack-mode-label">500 coups</div>
+      </div>
+      <div id="mode1000" class="attack-mode-image">
+        <img src="https://i.ibb.co/JMPfpWV/IMG-5851.png" alt="Galaxie - 1000 coups">
+        <div class="attack-mode-label">1000 coups</div>
+      </div>
     </div>
 
     <div class="controls">
@@ -1260,11 +1313,10 @@
     function setAttackMode(mode) {
       attackMode = mode;
       
-      document.querySelectorAll('.attack-mode-btn').forEach(btn => {
+      document.querySelectorAll('.attack-mode-image').forEach(btn => {
         btn.classList.remove('active');
       });
       
-      // si l'élément existe (sécurité)
       const btnEl = document.getElementById(`mode${mode}`);
       if (btnEl) btnEl.classList.add('active');
 
@@ -1346,10 +1398,8 @@
     document.getElementById("resetBtn").addEventListener("click", initGame);
 
     document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
-    document.getElementById("mode5").addEventListener("click", () => setAttackMode(5));
     document.getElementById("mode10").addEventListener("click", () => setAttackMode(10));
     document.getElementById("mode30").addEventListener("click", () => setAttackMode(30));
-    document.getElementById("mode50").addEventListener("click", () => setAttackMode(50));
     document.getElementById("mode100").addEventListener("click", () => setAttackMode(100));
     document.getElementById("mode500").addEventListener("click", () => setAttackMode(500));
     document.getElementById("mode1000").addEventListener("click", () => setAttackMode(1000));
@@ -1385,24 +1435,18 @@
           setAttackMode(1);
           break;
         case '2':
-          setAttackMode(5);
-          break;
-        case '3':
           setAttackMode(10);
           break;
-        case '4':
+        case '3':
           setAttackMode(30);
           break;
-        case '5':
-          setAttackMode(50);
-          break;
-        case '6':
+        case '4':
           setAttackMode(100);
           break;
-        case '7':
+        case '5':
           setAttackMode(500);
           break;
-        case '8':
+        case '6':
           setAttackMode(1000);
           break;
         case 'r':
