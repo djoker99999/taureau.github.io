@@ -598,36 +598,67 @@
     .difficulty-selector {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 15px;
       margin: 15px 0;
     }
 
     .difficulty-btn {
-      padding: 8px 15px;
+      width: 80px;
+      height: 80px;
       border-radius: 15px;
-      font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      border: 2px solid transparent;
-      font-size: 14px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .difficulty-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .difficulty-btn:hover::before {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .difficulty-btn.noob {
+      background-image: url('https://i.ibb.co/gFMBxFzP/IMG-6063.png');
+    }
+
+    .difficulty-btn.buchette {
+      background-image: url('https://i.ibb.co/JMPfpWV/IMG-5851.png');
     }
 
     .difficulty-btn.easy {
-      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+      background-image: url('https://i.ibb.co/p6s7HT5n/IMG-7322.png');
     }
 
     .difficulty-btn.medium {
-      background: linear-gradient(45deg, #FF9800, #FFC107);
+      background-image: url('https://i.ibb.co/hxXnkQh7/IMG-5861.png');
     }
 
     .difficulty-btn.hard {
-      background: linear-gradient(45deg, #F44336, #E91E63);
+      background-image: url('https://i.ibb.co/DHBNtX7t/IMG-6573.png');
     }
 
     .difficulty-btn.active {
-      border-color: white;
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
-      transform: scale(1.05);
+      border-color: #feca57;
+      box-shadow: 0 0 20px rgba(254, 202, 87, 0.8);
+      transform: scale(1.1);
+    }
+
+    .difficulty-btn.active::before {
+      background: rgba(254, 202, 87, 0.2);
     }
 
     /* Styles pour mobile */
@@ -644,6 +675,15 @@
       .bull {
         width: 160px;
         height: 140px;
+      }
+
+      .difficulty-selector {
+        gap: 10px;
+      }
+
+      .difficulty-btn {
+        width: 70px;
+        height: 70px;
       }
       
       .instructions {
@@ -727,6 +767,15 @@
       margin: 10px 0;
     }
 
+    .difficulty-badge.noob {
+      background: linear-gradient(45deg, #87CEEB, #B0E0E6);
+      color: #000;
+    }
+
+    .difficulty-badge.buchette {
+      background: linear-gradient(45deg, #DDA0DD, #DA70D6);
+    }
+
     .difficulty-badge.easy {
       background: linear-gradient(45deg, #4CAF50, #8BC34A);
     }
@@ -776,9 +825,11 @@
     <h1>🐂 Le Taureau Magique !</h1>
     
     <div class="difficulty-selector">
-      <div class="difficulty-btn easy active" data-difficulty="easy">Facile</div>
-      <div class="difficulty-btn medium" data-difficulty="medium">Moyen</div>
-      <div class="difficulty-btn hard" data-difficulty="hard">Difficile</div>
+      <div class="difficulty-btn noob active" data-difficulty="noob" title="Noob - 1500 HP"></div>
+      <div class="difficulty-btn buchette" data-difficulty="buchette" title="Buchette - 5000 HP"></div>
+      <div class="difficulty-btn easy" data-difficulty="easy" title="Facile - 15000 HP"></div>
+      <div class="difficulty-btn medium" data-difficulty="medium" title="Moyen - 25000 HP"></div>
+      <div class="difficulty-btn hard" data-difficulty="hard" title="Difficile - 50000 HP"></div>
     </div>
     
     <div class="bull-container">
@@ -836,7 +887,7 @@
     let lastHitTime = 0;
     let isAttacking = false;
     let audioContext = null;
-    let currentDifficulty = "easy";
+    let currentDifficulty = "noob";
 
     const bull = document.getElementById("bull");
     const message = document.getElementById("message");
@@ -1108,6 +1159,15 @@
       // Mettre à jour le compteur de points de vie
       hpValue.textContent = `${currentHP.toLocaleString()} / ${maxHP.toLocaleString()}`;
       
+      let difficultyName = "";
+      switch(currentDifficulty) {
+        case "noob": difficultyName = "noob"; break;
+        case "buchette": difficultyName = "buchette"; break;
+        case "easy": difficultyName = "facile"; break;
+        case "medium": difficultyName = "moyen"; break;
+        case "hard": difficultyName = "difficile"; break;
+      }
+      
       if (currentHP === 0) {
         bull.className = "bull broken " + currentDifficulty;
         message.textContent = "💥 Le taureau magique a été dompté !";
@@ -1117,7 +1177,7 @@
           message.textContent = "⚠️ Le taureau magique commence à faiblir...";
         } else {
           bull.classList.remove("cracked");
-          message.textContent = `Taureau magique ${currentDifficulty === "easy" ? "facile" : currentDifficulty === "medium" ? "moyen" : "difficile"} - À tout moment le taureau peut être dompté...`;
+          message.textContent = `Taureau magique ${difficultyName} - À tout moment le taureau peut être dompté...`;
         }
       }
     }
@@ -1129,6 +1189,16 @@
       
       // Déterminer la récompense selon la difficulté
       switch(currentDifficulty) {
+        case "noob":
+          rewardText = "Vous avez gagné 300 pièces !";
+          victoryText = "Bravo ! Tu as gagné tes premières pièces !";
+          rewardImg = "https://i.ibb.co/gFMBxFzP/IMG-6063.png";
+          break;
+        case "buchette":
+          rewardText = "Vous avez gagné une galaxie !";
+          victoryText = "Incroyable ! Tu as découvert une galaxie entière !";
+          rewardImg = "https://i.ibb.co/JMPfpWV/IMG-5851.png";
+          break;
         case "easy":
           rewardText = "Vous avez gagné 3000 pièces !";
           victoryText = "Félicitations ! Tu as remporté un superbe trésor !";
@@ -1220,6 +1290,12 @@
     function initGame() {
       // Définir les points de vie selon la difficulté
       switch(currentDifficulty) {
+        case "noob":
+          maxHP = 1500;
+          break;
+        case "buchette":
+          maxHP = 5000;
+          break;
         case "easy":
           maxHP = 15000;
           break;
@@ -1227,7 +1303,7 @@
           maxHP = 25000;
           break;
         case "hard":
-          maxHP = 50000; // 50 000 HP pour le niveau difficile
+          maxHP = 50000;
           break;
       }
       
@@ -1241,7 +1317,16 @@
       isAttacking = false;
       
       bull.className = "bull " + currentDifficulty;
-      message.textContent = `Taureau magique ${currentDifficulty === "easy" ? "facile" : currentDifficulty === "medium" ? "moyen" : "difficile"} - À tout moment le taureau peut être dompté...`;
+      
+      let difficultyName = "";
+      switch(currentDifficulty) {
+        case "noob": difficultyName = "noob"; break;
+        case "buchette": difficultyName = "buchette"; break;
+        case "easy": difficultyName = "facile"; break;
+        case "medium": difficultyName = "moyen"; break;
+        case "hard": difficultyName = "difficile"; break;
+      }
+      message.textContent = `Taureau magique ${difficultyName} - À tout moment le taureau peut être dompté...`;
       
       // Fermer la popup si elle est ouverte
       closeVictoryPopup();
@@ -1323,6 +1408,14 @@
         case 'r':
         case 'R':
           initGame();
+          break;
+        case 'n':
+        case 'N':
+          setDifficulty('noob');
+          break;
+        case 'b':
+        case 'B':
+          setDifficulty('buchette');
           break;
         case 'e':
         case 'E':
